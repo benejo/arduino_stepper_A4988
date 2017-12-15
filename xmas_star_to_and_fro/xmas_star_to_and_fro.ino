@@ -1,16 +1,18 @@
 
 // User variables
 int revs = 20;
-int _speed = 1000;
+int _fast = 1000;
 
 // Constants
-int Index;
+int index;
 int motion = 0;
 int count = 0;
 int halfrevs = revs / 2;
-int _slow = _speed * 2;
-int revsplus = revs + 1;
-
+int _slow = _fast * 2;
+int delay_speed;
+char cw_dir = HIGH;
+char acw_dir = LOW;
+char set_dir;
 
 
 
@@ -24,35 +26,20 @@ void setup()
   digitalWrite(6,LOW);
 }
 
-void cw_direction() {
-  digitalWrite(4,HIGH);
-}
-void acw_direction() {
-  digitalWrite(4,LOW);
+void _direction(char set_dir) {
+  digitalWrite(4,set_dir);
 }
 
 
-void high_motion()
+void _motion(int delay_speed)
 {
 
-  for(Index = 0; Index < 200; Index++)
+  for(index = 0; index < 200; index++)
   {
     digitalWrite(5,HIGH);
-    delayMicroseconds(_speed);
+    delayMicroseconds(delay_speed);
     digitalWrite(5,LOW);
-    delayMicroseconds(_speed);
-  }
-}
-
-void low_motion()
-{
-
-  for(Index = 0; Index < 200; Index++)
-  {
-    digitalWrite(5,HIGH);
-    delayMicroseconds(_slow);
-    digitalWrite(5,LOW);
-    delayMicroseconds(_slow);
+    delayMicroseconds(delay_speed);
   }
 }
 
@@ -67,20 +54,20 @@ void loop()
         Serial.println("TO - Fast motion detected!");
         count = count +1;
         Serial.println(count);
-        cw_direction();
-        high_motion();
+        _direction(cw_dir);
+        _motion(_fast);
       } else {
         Serial.println("TO - Slow motion detected!");
         count = count +1;
         Serial.println(count);
-        cw_direction();
-        low_motion();
+        _direction(cw_dir);
+        _motion(_slow);
       }
     }
     if (count == halfrevs) {
       
       delay(1000);
-      acw_direction();
+      _direction(acw_dir);
       count = count +1;
       Serial.println("Changing only direction in this step");
       Serial.println(count);
@@ -91,19 +78,19 @@ void loop()
         Serial.println("FRO - Fast motion detected!");
         count = count +1;
         Serial.println(count);
-        acw_direction();
-        high_motion();
+        _direction(acw_dir);
+        _motion(_fast);
       } else {
         Serial.println("FRO - Slow motion detected!");
         count = count +1;
         Serial.println(count);
-        acw_direction();
-        low_motion();
+        _direction(acw_dir);
+        _motion(_slow);
       }
     }
     if (count == revs) {
       delay(1000);
-      cw_direction();
+      _direction(cw_dir);
       count = count +1;
       Serial.println("Changing only direction in this step");
       Serial.println(count);
